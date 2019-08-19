@@ -1,5 +1,7 @@
-import React, {Fragment,useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {
+    AsyncStorage,
+    ActivityIndicator,
     SafeAreaView,
     StyleSheet,
     View,
@@ -10,12 +12,12 @@ import {
 } from 'react-native';
 
 
-const Login = () => {
+const Login = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin=()=>{
-        fetch('https://pisio.etfbl.net/~dejanm/project/rest/users/login', {
+    const handleLogin = async () => {
+        fetch('https://pisio.etfbl.net/~dragov/mojprojekat/user-rest/login', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -25,14 +27,21 @@ const Login = () => {
                 username: username,
                 password: password,
             }),
-        }).then(res=>{
-          return  res.json();
-        }).then(res=>{
-            console.log(res.auth_key,res.id);
-        }).catch(err=>{
+        }).then(res => {
+            return res.json();
+        }).then(res => {
+            // console.log(res.auth_key,res.id)
+            if (res.auth_key && res.id) {
+                AsyncStorage.setItem("userToken", res.auth_key).then(() => {
+                    console.log('idddd',res.id);
+                    AsyncStorage.setItem('id', res.id);
+                }).then(res => {
+                    props.navigation.navigate('Home');
+                });
+            }
+        }).catch(err => {
             console.log(err);
         });
-
 
     };
     return (
@@ -40,17 +49,21 @@ const Login = () => {
             <View style={styles.container}>
                 <Text>- LOGIN -</Text>
                 <TextInput
-                placeholder="Username"
-                underlineColorAndroid='transparent'
-                onChangeText={(value)=>{setUsername(value);}}
-            />
+                    placeholder="Username"
+                    underlineColorAndroid='transparent'
+                    onChangeText={(value) => {
+                        setUsername(value);
+                    }}
+                />
                 <TextInput
                     placeholder="Password"
                     underlineColorAndroid='transparent'
-                    onChangeText={(value)=>{setPassword(value);}}
+                    onChangeText={(value) => {
+                        setPassword(value);
+                    }}
                 />
                 <Button title='Log in'
-                onPress={handleLogin}
+                        onPress={handleLogin}
                 />
             </View>
         </Fragment>
@@ -66,10 +79,27 @@ const styles = StyleSheet.create({
         color: 'red',
         alignItems: 'center',
         justifyContent: 'center',
+        padding:20,
     }, titleText: {
         fontSize: 20,
         fontWeight: 'bold',
         color: 'red',
+    },
+    input:{
+        height: 40,
+        backgroundColor: 'rgba(225,225,225,0.2)',
+        marginBottom: 10,
+        padding: 10,
+        color: '#fff',
+    },
+    buttonContainer:{
+        backgroundColor: '#2980b6',
+        paddingVertical: 15,
+    },
+    buttonText:{
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: '700',
     },
 });
 
