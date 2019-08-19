@@ -1,6 +1,6 @@
 import {AsyncStorage, Button, StyleSheet, Text, TextInput, View,StatusBar} from "react-native";
 import React, {Fragment, useState} from 'react';
-import {HeaderNavigationBar} from './Home';
+import HeaderNavigationBar from "./HeaderNavigationBar";
 
 
 
@@ -27,7 +27,7 @@ const Other = (props) => {
             flex: 1,
             flexDirection: 'column',
         }}>
-            <HeaderNavigationBar {...props} />
+            <HeaderNavigationBar {...props} titleName='Other'/>
             <View style={{
                 flex: 1,
                 backgroundColor: '#4734ac',

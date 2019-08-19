@@ -33,8 +33,7 @@ const Login = (props) => {
             // console.log(res.auth_key,res.id)
             if (res.auth_key && res.id) {
                 AsyncStorage.setItem("userToken", res.auth_key).then(() => {
-                    console.log('idddd',res.id);
-                    AsyncStorage.setItem('id', res.id);
+                    AsyncStorage.setItem('id', '' + res.id);
                 }).then(res => {
                     props.navigation.navigate('Home');
                 });
@@ -79,28 +78,29 @@ const styles = StyleSheet.create({
         color: 'red',
         alignItems: 'center',
         justifyContent: 'center',
-        padding:20,
+        padding: 20,
     }, titleText: {
         fontSize: 20,
         fontWeight: 'bold',
         color: 'red',
     },
-    input:{
+    input: {
         height: 40,
         backgroundColor: 'rgba(225,225,225,0.2)',
         marginBottom: 10,
         padding: 10,
         color: '#fff',
     },
-    buttonContainer:{
+    buttonContainer: {
         backgroundColor: '#2980b6',
         paddingVertical: 15,
     },
-    buttonText:{
+    buttonText: {
         color: '#fff',
         textAlign: 'center',
         fontWeight: '700',
     },
 });
+
 
 export default Login;

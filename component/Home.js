@@ -5,43 +5,9 @@ import {
     Text,
     TextInput,
     View,
-    StatusBar,
-    TouchableHighlight,
-    TouchableOpacity,
-    Image
 } from "react-native";
 import React, {Fragment, useState} from 'react';
-
-
-export const HeaderNavigationBar = (props) => {
-    return (<View style={{
-        height: 70,
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center'
-    }}>
-        <TouchableHighlight style={{marginLeft: 10, marginTop: 12}}
-                            onPress={() => {
-                                props.navigation.openDrawer();
-                            }}>
-            <Image
-                style={{width: 32, height: 32}}
-                source={{uri: 'https://png.icons8.com/ios/2x/menu-filled.png'}}
-            />
-        </TouchableHighlight>
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-                AsyncStorage.clear();
-                props.navigation.navigate('Login');
-            }}
-        >
-            <Text> Touch Here </Text>
-        </TouchableOpacity>
-
-    </View>);
-};
-
+import HeaderNavigationBar from "./HeaderNavigationBar";
 
 const Home = (props) => {
     const [text, setText] = useState('Drago');
@@ -54,20 +20,13 @@ const Home = (props) => {
         console.log(id, auth_id);
     };
 
-    //Kako pozvati unutar navigationOPtions
-
-    const logout = async () => {
-        await AsyncStorage.clear();
-        props.navigation.navigate('Login');
-    };
-
     checkId();
     return (
         <View style={{
             flex: 1,
             flexDirection: 'column',
         }}>
-            <HeaderNavigationBar {...props} />
+            <HeaderNavigationBar {...props} titleName='Home'/>
             <View style={{
                 flex: 1,
                 backgroundColor: '#4734ac',
