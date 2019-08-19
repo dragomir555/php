@@ -12,7 +12,10 @@ import {
 import Login from './component/Login';
 import AuthLoadingScreen from "./component/AuthLoadingScreen";
 import Other from "./component/Other";
-import Home from "./component/Home";
+import Building from "./component/Building";
+import Room from "./component/Room";
+import Location from "./component/Location";
+import Person from "./component/Person";
 import {
     createStackNavigator,
     createAppContainer,
@@ -21,9 +24,16 @@ import {
     createDrawerNavigator,
 } from 'react-navigation';
 
+const BuildingNavigator = createStackNavigator({
+    BuildingRoom: Building
+    , Room: Room,Location:Location,
+}, {
+    initialRouteName: 'BuildingRoom',
+});
 
-const AppNavigator = createDrawerNavigator({Home: Home, Other: Other}, {initialRouteName: 'Home'});
-//const StackNavigator = createStackNavigator({App: AppNavigator}, {initialRouteName: 'App'});
+const PersonNavigator=createStackNavigator({Person:Person},{initialRouteName:'Person'});
+
+const AppNavigator = createDrawerNavigator({Building: BuildingNavigator, Person: PersonNavigator}, {initialRouteName: 'Building'});
 
 
 const MainNavigator = createSwitchNavigator(
@@ -47,7 +57,6 @@ const MainNavigator = createSwitchNavigator(
         },
     }
 );
-
 
 //const App =
 export default createAppContainer(MainNavigator);

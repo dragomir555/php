@@ -2,11 +2,11 @@ import React, {Fragment, useState} from 'react';
 import {
     StyleSheet,
     View,
-    AsyncStorage,
     ActivityIndicator,
     StatusBar,
 } from 'react-native';
 
+import AsyncStorage from '@react-native-community/async-storage';
 
 const AuthLoadingScreen = (props) => {
     const [username, setUsername] = useState('');
@@ -14,7 +14,7 @@ const AuthLoadingScreen = (props) => {
 
     const checkAuth = async () => {
         const userToken =await AsyncStorage.getItem('userToken');
-        props.navigation.navigate(userToken ? 'Home' : 'Login');
+        props.navigation.navigate(userToken ? 'Building' : 'Login');
     };
     checkAuth();
     return (

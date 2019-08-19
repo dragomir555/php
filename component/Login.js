@@ -1,6 +1,5 @@
 import React, {Fragment, useState} from 'react';
 import {
-    AsyncStorage,
     ActivityIndicator,
     SafeAreaView,
     StyleSheet,
@@ -10,7 +9,7 @@ import {
     TextInput,
     Button,
 } from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Login = (props) => {
     const [username, setUsername] = useState('');
@@ -35,7 +34,7 @@ const Login = (props) => {
                 AsyncStorage.setItem("userToken", res.auth_key).then(() => {
                     AsyncStorage.setItem('id', '' + res.id);
                 }).then(res => {
-                    props.navigation.navigate('Home');
+                    props.navigation.navigate('Building');
                 });
             }
         }).catch(err => {

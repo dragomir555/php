@@ -1,23 +1,18 @@
 import {
-    Button,
     StyleSheet,
     Text,
-    TextInput,
     View,
-    StatusBar,
-    TouchableOpacity,
-    TouchableHighlight,
-    Image
+    TouchableOpacity, TouchableHighlight, Image,
+
 } from "react-native";
 import React, {Fragment, useState} from 'react';
-import HeaderNavigationBar from "./HeaderNavigationBar";
 import AsyncStorage from '@react-native-community/async-storage';
-import Building from "./Building";
 
 
 
 
-const Other = (props) => {
+
+const Person = (props) => {
     const [text, setText] = useState('Drago');
     const handleChangeText = (text) => {
         setText(text);
@@ -54,8 +49,8 @@ const Other = (props) => {
     );
 };
 
-Other.navigationOptions = ({ navigation }) => ({
-    title: 'Other',
+Person.navigationOptions = ({ navigation }) => ({
+    title: 'Persons',
     headerTitleStyle: { alignSelf: 'center',flex:1,textAlign: 'center' },
     headerRight: (
         <TouchableOpacity
@@ -66,7 +61,17 @@ Other.navigationOptions = ({ navigation }) => ({
             }}
         >
             <Text style={styles.textStyle}> Logout </Text>
-        </TouchableOpacity>),
+        </TouchableOpacity>),  headerLeft:(
+        <TouchableHighlight style={{marginLeft: 10, marginTop: 12}}
+                            onPress={() => {
+                                navigation.openDrawer();
+                            }}>
+            <Image
+                style={{width: 32, height: 32}}
+                source={{uri: 'https://png.icons8.com/ios/2x/menu-filled.png'}}
+            />
+        </TouchableHighlight>
+    ),
 });
 
 const styles = StyleSheet.create({
@@ -81,15 +86,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'red',
     },  buttonStyle: {
-    marginRight:10,
+        marginRight:10,
         padding:10,
         backgroundColor: '#202646',
         borderRadius:5,
-},textStyle: {
-    fontSize:16,
+    },textStyle: {
+        fontSize:16,
         color: '#ffffff',
         textAlign: 'center',
-}
+    }
 });
 
-export default Other;
+export default Person;
