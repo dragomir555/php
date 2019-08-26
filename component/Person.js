@@ -2,56 +2,89 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity, TouchableHighlight, Image,
+    TouchableOpacity, TouchableHighlight, Image, ActivityIndicator, FlatList,
 
 } from "react-native";
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-
-
-
+import StyleFlexList from "./StyleFlexList";
+import styles from './StyleForm';
 
 
 const Person = (props) => {
+    const[isLoading,setLoading]=useState(false);
     const [text, setText] = useState('Drago');
+    const [people, setPeople] = useState([]);
     const handleChangeText = (text) => {
         setText(text);
     };
-    const checkId = async () => {
-        let id = await AsyncStorage.getItem('id');
-        let auth_id = await AsyncStorage.getItem('userToken');
-        console.log(id, auth_id);
-    };
+
+    useEffect(() => {
+        async function fetchData(){
+            setLoading(true);
+            const token = await AsyncStorage.getItem('userToken');
+            console.log('Dragomirrr');
+            const personJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/people/${token}`, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const PersonObj = await personJson.json();
+            setPeople(PersonObj);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
 
     //Kako pozvati unutar navigationOPtions
     const logout = async () => {
         await AsyncStorage.clear();
         props.navigation.navigate('Login');
     };
-    checkId();
-    return (
-        <View style={{
-            flex: 1,
-            flexDirection: 'column',
-        }}>
-            <View style={{
-                flex: 1,
-                backgroundColor: '#4734ac',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 22, color: 'white' }}>
-                    Ovo su zgrade
-                </Text>
 
-            </View>
+    return (
+        <View style={styles.container}>
+            {isLoading ? <View>
+                    <ActivityIndicator size='large' color='red'/>
+                </View>
+                :
+                <View style={styles.content}>
+                    <Text style={styles.titleText}>
+                        {}
+                    </Text>
+                    <FlatList {...props} data={people} ItemSeparatorComponent={_renderSeparator}
+                              renderItem={({item}) => {
+                                  return renderItem(item, props.navigation);
+                              }}/>
+                </View>}
         </View>
     );
 };
 
-Person.navigationOptions = ({ navigation }) => ({
+const _renderSeparator = () => {
+    return <View
+        style={StyleFlexList.separator}
+    />
+};
+
+const renderItem = (prop, navigation) => {
+    return <TouchableOpacity>
+        <View style={StyleFlexList.container}>
+            <Text style={StyleFlexList.title}>{ prop.name}</Text>
+            <Text style={StyleFlexList.content}>{'contact: ' + prop.contact}</Text>
+            <Text style={StyleFlexList.content}>{'title: ' + prop.title}</Text>
+        </View>
+    </TouchableOpacity>;
+};
+
+
+
+Person.navigationOptions = ({navigation}) => ({
     title: 'Persons',
-    headerTitleStyle: { alignSelf: 'center',flex:1,textAlign: 'center' },
+    headerTitleStyle: {alignSelf: 'center', flex: 1, textAlign: 'center'},
     headerRight: (
         <TouchableOpacity
             style={styles.buttonStyle}
@@ -61,7 +94,7 @@ Person.navigationOptions = ({ navigation }) => ({
             }}
         >
             <Text style={styles.textStyle}> Logout </Text>
-        </TouchableOpacity>),  headerLeft:(
+        </TouchableOpacity>), headerLeft: (
         <TouchableHighlight style={{marginLeft: 10, marginTop: 12}}
                             onPress={() => {
                                 navigation.openDrawer();
@@ -74,27 +107,5 @@ Person.navigationOptions = ({ navigation }) => ({
     ),
 });
 
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 34,
-        flex: 1,
-        color: 'red',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }, titleText: {
-        fontSize: 40,
-        fontWeight: 'bold',
-        color: 'red',
-    },  buttonStyle: {
-        marginRight:10,
-        padding:10,
-        backgroundColor: '#202646',
-        borderRadius:5,
-    },textStyle: {
-        fontSize:16,
-        color: '#ffffff',
-        textAlign: 'center',
-    }
-});
 
 export default Person;

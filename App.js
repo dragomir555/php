@@ -1,12 +1,6 @@
 import React, {Fragment, useState} from 'react';
 import {
-    SafeAreaView,
-    StyleSheet,
-    AsyncStorage,
-    View,
-    Text,
-    StatusBar,
-    TextInput,
+    Dimensions,
     Button,
 } from 'react-native';
 import Login from './component/Login';
@@ -26,14 +20,20 @@ import {
 
 const BuildingNavigator = createStackNavigator({
     BuildingRoom: Building
-    , Room: Room,Location:Location,
+    , Room: Room, Location: Location,
 }, {
     initialRouteName: 'BuildingRoom',
 });
+const WIDTH=Dimensions.get('window').width;
 
-const PersonNavigator=createStackNavigator({Person:Person},{initialRouteName:'Person'});
+const PersonNavigator = createStackNavigator({Person: Person}, {initialRouteName: 'Person'});
 
-const AppNavigator = createDrawerNavigator({Building: BuildingNavigator, Person: PersonNavigator}, {initialRouteName: 'Building'});
+const AppNavigator = createDrawerNavigator({
+    Building: BuildingNavigator,
+    Person: PersonNavigator
+}, {initialRouteName: 'Building',
+    drawerWidth:WIDTH*0.5,
+});
 
 
 const MainNavigator = createSwitchNavigator(
