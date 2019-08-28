@@ -53,6 +53,7 @@ const Location = (props) => {
                     <Text style={styles.titleText}>
                         {props.navigation.getParam('buildingName') + '->' + props.navigation.getParam('roomName')}
                     </Text>
+                    <Text style={styles.titleText}>Locations:</Text>
                     <FlatList {...props} data={locations} ItemSeparatorComponent={_renderSeparator}
                               renderItem={({item}) => {
                                   return renderItem(item, props.navigation);

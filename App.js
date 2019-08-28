@@ -10,6 +10,8 @@ import Building from "./component/Building";
 import Room from "./component/Room";
 import Location from "./component/Location";
 import Person from "./component/Person";
+import Resource from './component/Resource';
+import Transition from "./component/Transition";
 import {
     createStackNavigator,
     createAppContainer,
@@ -27,10 +29,14 @@ const BuildingNavigator = createStackNavigator({
 const WIDTH=Dimensions.get('window').width;
 
 const PersonNavigator = createStackNavigator({Person: Person}, {initialRouteName: 'Person'});
+const ResourceNavigator=createStackNavigator({Resource:Resource},{initialRouteName: 'Resource'});
+const TransitionNavigator=createStackNavigator({Transition:Transition},{initialRouteName:'Transition'});
 
 const AppNavigator = createDrawerNavigator({
     Building: BuildingNavigator,
-    Person: PersonNavigator
+    Person: PersonNavigator,
+    Resource: ResourceNavigator,
+    Transition:TransitionNavigator,
 }, {initialRouteName: 'Building',
     drawerWidth:WIDTH*0.5,
 });

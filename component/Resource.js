@@ -3,27 +3,27 @@ import {
     Text,
     View,
     TouchableOpacity, TouchableHighlight, Image, ActivityIndicator, FlatList,
-
 } from "react-native";
 import React, {Fragment, useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import StyleFlexList from "./StyleFlexList";
 import styles from './StyleForm';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 
 
-const Transition = (props) => {
-    const [isLoading, setLoading] = useState(false);
+const Resource = (props) => {
+    const[isLoading,setLoading]=useState(false);
     const [text, setText] = useState('Drago');
-    const [transition, setTransition] = useState([]);
+    const [resource, setResource] = useState([]);
     const handleChangeText = (text) => {
         setText(text);
     };
 
     useEffect(() => {
-        async function fetchData() {
+        async function fetchData(){
             setLoading(true);
             const token = await AsyncStorage.getItem('userToken');
-            const TransitionJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/transits/${token}`, {
+            const ResourceJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/resources/${token}`, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -31,11 +31,10 @@ const Transition = (props) => {
                 },
             });
 
-            const TransitionObj = await TransitionJson.json();
-            setTransition(TransitionObj);
+            const ResourceObj = await ResourceJson.json();
+            setResource(ResourceObj);
             setLoading(false);
         }
-
         fetchData();
     }, []);
 
@@ -55,7 +54,7 @@ const Transition = (props) => {
                     <Text style={styles.titleText}>
 
                     </Text>
-                    <FlatList {...props} data={transition} ItemSeparatorComponent={_renderSeparator}
+                    <FlatList {...props} data={resource} ItemSeparatorComponent={_renderSeparator}
                               renderItem={({item}) => {
                                   return renderItem(item, props.navigation);
                               }}/>
@@ -73,22 +72,21 @@ const _renderSeparator = () => {
 const renderItem = (prop, navigation) => {
     return <TouchableOpacity>
         <View style={StyleFlexList.container}>
-            <Text style={StyleFlexList.title}>{'Transition code: ' + prop.id}</Text>
-            <Text style={StyleFlexList.content}>{'Resource: ' + prop.resourceIdresource.name}</Text>
-            <Text style={StyleFlexList.content}>{'Transition time: ' + prop.createdTime}</Text>
-            <Text style={StyleFlexList.content}>{'Person from: ' + prop.personIdpersonFrom.name}</Text>
-            <Text style={StyleFlexList.content}>{'Person to: ' + prop.personIdpersonTo.name}</Text>
-            <Text style={StyleFlexList.content}>{'Location from: ' + (prop.locationIdlocationFrom.roomIdroom.buildingIdbuilding.name+'->'
-                +prop.locationIdlocationFrom.roomIdroom.name+'->'+ prop.locationIdlocationFrom.description)}</Text>
-            <Text style={StyleFlexList.content}>{'Location to: '+(prop.locationIdlocationTo.roomIdroom.buildingIdbuilding.name+'->'
-                +prop.locationIdlocationTo.roomIdroom.name+'->'+ prop.locationIdlocationTo.description)}</Text>
+            <Text style={StyleFlexList.title}>{ prop.name}</Text>
+            <Text style={StyleFlexList.content}>{'Inventory number: ' + prop.inv_number}</Text>
+            <Text style={StyleFlexList.content}>{'Type: ' + prop.type}</Text>
+            <Text style={StyleFlexList.content}>{'Description: ' + prop.description}</Text>
+            <Text style={StyleFlexList.content}>{'Purchase Date: ' + prop.purchase_date}</Text>
+            <Text style={StyleFlexList.content}>{'Purchase Price: ' + prop.purchase_price}</Text>
+            <Text style={StyleFlexList.content}>{'Amortization: ' + prop.amortization}</Text>
         </View>
     </TouchableOpacity>;
 };
 
 
-Transition.navigationOptions = ({navigation}) => ({
-    title: 'Transition',
+
+Resource.navigationOptions = ({navigation}) => ({
+    title: 'Resource',
     headerTitleStyle: {alignSelf: 'center', flex: 1, textAlign: 'center'},
     headerRight: (
         <TouchableOpacity
@@ -113,4 +111,4 @@ Transition.navigationOptions = ({navigation}) => ({
 });
 
 
-export default Transition;
+export default Resource;

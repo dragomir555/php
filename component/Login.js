@@ -8,14 +8,20 @@ import {
     StatusBar,
     TextInput,
     Button,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Keyboard,
+    ScrollView
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Login = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [loading,setLoading]=useState(false);
 
     const handleLogin = async () => {
+        setLoading(true);
         fetch('https://pisio.etfbl.net/~dragov/mojprojekat/user-rest/login', {
             method: 'POST',
             headers: {
@@ -27,6 +33,7 @@ const Login = (props) => {
                 password: password,
             }),
         }).then(res => {
+            setLoading(false);
             return res.json();
         }).then(res => {
             // console.log(res.auth_key,res.id)
@@ -38,68 +45,100 @@ const Login = (props) => {
                 });
             }
         }).catch(err => {
+            setLoading(false);
             console.log(err);
         });
 
     };
     return (
-        <Fragment>
-            <View style={styles.container}>
-                <Text>- LOGIN -</Text>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+            {loading?<View>
+                <ActivityIndicator size={'large'} color={'blue'}/>
+                </View>:
+            <ScrollView>
+            <KeyboardAvoidingView style={styleLogin.containerView} behavior="padding" enabled>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styleLogin.loginScreenContainer}>
+                <Text style={styleLogin.logoText}>UNIBL</Text>
                 <TextInput
                     placeholder="Username"
-                    underlineColorAndroid='transparent'
+                    style={styleLogin.loginFormTextInput}
+                    placeholderColor="#c4c3cb"
                     onChangeText={(value) => {
                         setUsername(value);
                     }}
                 />
                 <TextInput
                     placeholder="Password"
-                    underlineColorAndroid='transparent'
+                    style={styleLogin.loginFormTextInput}
+                    placeholderColor="#c4c3cb"
+                    secureTextEntry={true}
                     onChangeText={(value) => {
                         setPassword(value);
                     }}
                 />
+                <View style={{margin:20,borderRadius:5,backgroundColor:'green'}}>
                 <Button title='Log in'
                         onPress={handleLogin}
                 />
+                </View>
             </View>
-        </Fragment>
+            </TouchableWithoutFeedback>
+                </KeyboardAvoidingView>
+            </ScrollView>}
+        </SafeAreaView>
     );
 };
 
 Login.navigationOptions = {
     title: 'Login',
 };
-const styles = StyleSheet.create({
-    container: {
+
+const styleLogin=StyleSheet.create({
+    containerView: {
         flex: 1,
-        color: 'red',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    }, titleText: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: 'red',
     },
-    input: {
-        height: 40,
-        backgroundColor: 'rgba(225,225,225,0.2)',
-        marginBottom: 10,
-        padding: 10,
-        color: '#fff',
+    loginScreenContainer: {
+        flex: 1,
     },
-    buttonContainer: {
-        backgroundColor: '#2980b6',
-        paddingVertical: 15,
-    },
-    buttonText: {
-        color: '#fff',
+    logoText: {
+        fontSize: 40,
+        fontWeight: "800",
+        marginTop: 150,
+        marginBottom: 30,
         textAlign: 'center',
-        fontWeight: '700',
+    },
+    loginFormView: {
+        flex: 1,
+    },
+    loginFormTextInput: {
+        height: 43,
+        fontSize: 14,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#eaeaea',
+        backgroundColor: '#fafafa',
+        paddingLeft: 10,
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 5,
+        marginBottom: 5,
+
+    },
+    loginButton: {
+        backgroundColor: '#3897f1',
+        borderRadius: 5,
+        height: 45,
+        marginTop: 10,
+    },
+    fbLoginButton: {
+        height: 45,
+        marginTop: 10,
+        backgroundColor: 'transparent',
     },
 });
+
+
 
 
 export default Login;

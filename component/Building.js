@@ -2,6 +2,7 @@ import {
     Text,
     View,
     FlatList,
+    StyleSheet,
     ActivityIndicator, TouchableOpacity, TouchableHighlight, Image
 } from "react-native";
 import React, {Fragment, useState, useEffect} from 'react';
@@ -19,7 +20,7 @@ const Building = (props) => {
         async function fetchData() {
             setLoading(true);
             const token = await AsyncStorage.getItem('userToken');
-            const buildings = await fetch('https://pisio.etfbl.net/~dragov/mojprojekat/building-rest/' + token, {
+            const buildings = await fetch('https://pisio.etfbl.net/~dragov/mojprojekat/rest/buildings/' + token, {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
@@ -49,12 +50,14 @@ const Building = (props) => {
                 :
                 <View style={styles.content}>
                     <Text style={styles.titleText}>
-                        Buildings
+                        {}
                     </Text>
-                    <FlatList {...props} data={buildings} ItemSeparatorComponent={_renderSeparator}
-                              renderItem={({item}) => {
-                                  return renderItem(item, props.navigation);
-                              }}/>
+                    <View style={{marginBottom: 20, padding: 0}}>
+                        <FlatList  {...props} data={buildings} ItemSeparatorComponent={_renderSeparator}
+                                   renderItem={({item}) => {
+                                       return renderItem(item, props.navigation);
+                                   }}/>
+                    </View>
                 </View>}
         </View>
     );
@@ -90,7 +93,13 @@ const renderItem = (prop, navigation) => {
     return <TouchableOpacity onPress={() => {
         navigation.navigate('Room', {
             buildingId: prop.id,
-            buildingName:prop.name,
+            buildingName: prop.name,
+            coordinate:{
+                longitude:prop.longitude,
+                latitude:prop.latitude,
+            },
+            longitude:prop.longitude,
+            latitude:prop.latitude,
         });
     }}>
         <View style={StyleFlexList.container}>
@@ -99,6 +108,5 @@ const renderItem = (prop, navigation) => {
         </View>
     </TouchableOpacity>;
 };
-
 
 export default Building;

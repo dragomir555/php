@@ -8,7 +8,6 @@ export default  StyleSheet.create({
     content:{
         flex: 1,
         backgroundColor: '#4734ac',
-        justifyContent: 'center',
     },
     titleText: {
         fontWeight: 'bold',
