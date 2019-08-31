@@ -19,13 +19,13 @@ const Transition = (props) => {
 
     const _onRefresh = async () => {
         setRefreshing(true);
-        await fetchData();
+        await fetchData(false);
         setRefreshing(false);
     };
 
 
-    const fetchData=async ()=>{
-        setLoading(true);
+    const fetchData=async (spinner)=>{
+        setLoading(spinner);
         const token = await AsyncStorage.getItem('userToken');
         const TransitionJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/transits/${token}`, {
             method: 'GET',
@@ -39,8 +39,9 @@ const Transition = (props) => {
         setTransition(TransitionObj);
         setLoading(false);
     };
+
     useEffect(() => {
-        fetchData();
+        fetchData(true);
     }, []);
 
     //Kako pozvati unutar navigationOPtions

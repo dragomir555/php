@@ -19,12 +19,12 @@ const Building = (props) => {
 
     const _onRefresh = async () => {
         setRefreshing(true);
-        await fetchData();
+        await fetchData(false);
         setRefreshing(false);
     };
 
-    const fetchData = async () => {
-        setLoading(true);
+    const fetchData = async (spinner) => {
+        setLoading(spinner);
         const token = await AsyncStorage.getItem('userToken');
         const buildings = await fetch('https://pisio.etfbl.net/~dragov/mojprojekat/rest/buildings/' + token, {
             method: 'GET',
@@ -41,7 +41,7 @@ const Building = (props) => {
 
 
     useEffect(() => {
-        fetchData();
+        fetchData(true);
     }, []);//Ako stavimo nesto u zagrade uradice se rerun samo kad se to promjeni
 
     const _renderSeparator = () => {

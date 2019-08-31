@@ -22,13 +22,13 @@ const Person = (props) => {
 
     const _onRefresh = async () => {
         setRefreshing(true);
-        await fetchData();
+        await fetchData(false);
         setRefreshing(false);
     };
 
 
-    const fetchData=async()=>{
-        setLoading(true);
+    const fetchData=async(spinner)=>{
+        setLoading(spinner);
         const token = await AsyncStorage.getItem('userToken');
         console.log('Dragomirrr');
         const personJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/people/${token}`, {
@@ -44,7 +44,7 @@ const Person = (props) => {
         setLoading(false);
     }
     useEffect(() => {
-        fetchData();
+        fetchData(true);
     }, []);
 
     //Kako pozvati unutar navigationOPtions

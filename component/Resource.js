@@ -37,7 +37,7 @@ const Resource = (props) => {
 
     const _onRefresh = async () => {
         setRefreshing(true);
-       await fetchData();
+       await fetchData(false);
         setRefreshing(false);
     };
 
@@ -85,8 +85,8 @@ const Resource = (props) => {
         setExpanded(true);
     };
 
-    const fetchData=async() =>{
-        setLoading(true);
+    const fetchData=async(spinner) =>{
+        setLoading(spinner);
         const token = await AsyncStorage.getItem('userToken');
         const ResourceJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/resources/${token}`, {
             method: 'GET',
@@ -100,7 +100,7 @@ const Resource = (props) => {
         setLoading(false);
     }
     useEffect(() => {
-        fetchData();
+        fetchData(true);
     }, []);
 
     //Kako pozvati unutar navigationOPtions
