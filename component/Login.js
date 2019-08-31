@@ -53,6 +53,7 @@ const Login = (props) => {
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
             {loading?<View>
+                    <Text style={{fontSize:30,color:'blue'}}>Loading...</Text>
                 <ActivityIndicator size={'large'} color={'blue'}/>
                 </View>:
             <ScrollView>

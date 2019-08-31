@@ -2,7 +2,7 @@ import {
     Text,
     View,
     FlatList,
-    ActivityIndicator, Dimensions, TouchableOpacity, TouchableHighlight, Image, StyleSheet
+    ActivityIndicator, Dimensions, TouchableOpacity, TouchableHighlight, Image, StyleSheet,ScrollView
 } from "react-native";
 import React, {Fragment, useState, useEffect} from 'react';
 import StyleFlexList from "./StyleFlexList";
@@ -93,12 +93,14 @@ const Room = (props) => {
                     <Text style={styles.titleText}>
                         {'Rooms'}
                     </Text>
+                    <ScrollView>
                     <View>
                     <FlatList {...props} data={rooms} ItemSeparatorComponent={_renderSeparator}
                               renderItem={({item}) => {
                                   return renderItem(item, props.navigation);
                               }}/>
                     </View>
+                    </ScrollView>
                 </View>}
         </View>
     );

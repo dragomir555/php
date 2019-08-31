@@ -2,7 +2,7 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity, TouchableHighlight, Image, ActivityIndicator, FlatList,
+    TouchableOpacity, TouchableHighlight, Image, ActivityIndicator, FlatList,ScrollView,RefreshControl
 
 } from "react-native";
 import React, {Fragment, useState, useEffect} from 'react';
@@ -18,24 +18,32 @@ const Person = (props) => {
     const handleChangeText = (text) => {
         setText(text);
     };
+    const [refreshing, setRefreshing] = useState(false);
 
+    const _onRefresh = async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
+    };
+
+
+    const fetchData=async()=>{
+        setLoading(true);
+        const token = await AsyncStorage.getItem('userToken');
+        console.log('Dragomirrr');
+        const personJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/people/${token}`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const PersonObj = await personJson.json();
+        setPeople(PersonObj);
+        setLoading(false);
+    }
     useEffect(() => {
-        async function fetchData(){
-            setLoading(true);
-            const token = await AsyncStorage.getItem('userToken');
-            console.log('Dragomirrr');
-            const personJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/people/${token}`, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const PersonObj = await personJson.json();
-            setPeople(PersonObj);
-            setLoading(false);
-        }
         fetchData();
     }, []);
 
@@ -47,6 +55,16 @@ const Person = (props) => {
 
     return (
         <View style={styles.container}>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={_onRefresh}
+                    />}
+                contentContainerStyle={{
+                    flex: 1
+                }}
+            >
             {isLoading ? <View>
                     <ActivityIndicator size='large' color='red'/>
                 </View>
@@ -60,6 +78,7 @@ const Person = (props) => {
                                   return renderItem(item, props.navigation);
                               }}/>
                 </View>}
+            </ScrollView>
         </View>
     );
 };

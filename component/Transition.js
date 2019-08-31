@@ -2,7 +2,7 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity, TouchableHighlight, Image, ActivityIndicator, FlatList,
+    TouchableOpacity, TouchableHighlight, Image, ActivityIndicator, FlatList,ScrollView,RefreshControl
 
 } from "react-native";
 import React, {Fragment, useState, useEffect} from 'react';
@@ -15,27 +15,31 @@ const Transition = (props) => {
     const [isLoading, setLoading] = useState(false);
     const [text, setText] = useState('Drago');
     const [transition, setTransition] = useState([]);
-    const handleChangeText = (text) => {
-        setText(text);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const _onRefresh = async () => {
+        setRefreshing(true);
+        await fetchData();
+        setRefreshing(false);
     };
 
+
+    const fetchData=async ()=>{
+        setLoading(true);
+        const token = await AsyncStorage.getItem('userToken');
+        const TransitionJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/transits/${token}`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const TransitionObj = await TransitionJson.json();
+        setTransition(TransitionObj);
+        setLoading(false);
+    };
     useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            const token = await AsyncStorage.getItem('userToken');
-            const TransitionJson = await fetch(`https://pisio.etfbl.net/~dragov/mojprojekat/rest/transits/${token}`, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const TransitionObj = await TransitionJson.json();
-            setTransition(TransitionObj);
-            setLoading(false);
-        }
-
         fetchData();
     }, []);
 
@@ -55,10 +59,21 @@ const Transition = (props) => {
                     <Text style={styles.titleText}>
 
                     </Text>
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={_onRefresh}
+                            />}
+                        contentContainerStyle={{
+                            flex: 1
+                        }}
+                    >
                     <FlatList {...props} data={transition} ItemSeparatorComponent={_renderSeparator}
                               renderItem={({item}) => {
                                   return renderItem(item, props.navigation);
                               }}/>
+                    </ScrollView>
                 </View>}
         </View>
     );
