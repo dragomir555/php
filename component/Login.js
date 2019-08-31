@@ -11,14 +11,14 @@ import {
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
     Keyboard,
-    ScrollView
+    ScrollView,Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Login = (props) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [loading,setLoading]=useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
         setLoading(true);
@@ -34,9 +34,14 @@ const Login = (props) => {
             }),
         }).then(res => {
             setLoading(false);
+            if (res.status === 401) {
+                throw new Error('Error');
+            }
             return res.json();
         }).then(res => {
             // console.log(res.auth_key,res.id)
+
+            // console.log(res);
             if (res.auth_key && res.id) {
                 AsyncStorage.setItem("userToken", res.auth_key).then(() => {
                     AsyncStorage.setItem('id', '' + res.id);
@@ -46,47 +51,47 @@ const Login = (props) => {
             }
         }).catch(err => {
             setLoading(false);
-            console.log(err);
+           Alert.alert('Login error','The username or password is incorrect');
         });
 
     };
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-            {loading?<View>
-                    <Text style={{fontSize:30,color:'blue'}}>Loading...</Text>
-                <ActivityIndicator size={'large'} color={'blue'}/>
-                </View>:
-            <ScrollView>
-            <KeyboardAvoidingView style={styleLogin.containerView} behavior="padding" enabled>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styleLogin.loginScreenContainer}>
-                <Text style={styleLogin.logoText}>UNIBL</Text>
-                <TextInput
-                    placeholder="Username"
-                    style={styleLogin.loginFormTextInput}
-                    placeholderColor="#c4c3cb"
-                    onChangeText={(value) => {
-                        setUsername(value);
-                    }}
-                />
-                <TextInput
-                    placeholder="Password"
-                    style={styleLogin.loginFormTextInput}
-                    placeholderColor="#c4c3cb"
-                    secureTextEntry={true}
-                    onChangeText={(value) => {
-                        setPassword(value);
-                    }}
-                />
-                <View style={{margin:20,borderRadius:5,backgroundColor:'green'}}>
-                <Button title='Log in'
-                        onPress={handleLogin}
-                />
-                </View>
-            </View>
-            </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
-            </ScrollView>}
+            {loading ? <View>
+                    <Text style={{fontSize: 30, color: 'blue'}}>Loading...</Text>
+                    <ActivityIndicator size={'large'} color={'blue'}/>
+                </View> :
+                <ScrollView>
+                    <KeyboardAvoidingView style={styleLogin.containerView} behavior="padding" enabled>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            <View style={styleLogin.loginScreenContainer}>
+                                <Text style={styleLogin.logoText}>UNIBL</Text>
+                                <TextInput
+                                    placeholder="Username"
+                                    style={styleLogin.loginFormTextInput}
+                                    placeholderColor="#c4c3cb"
+                                    onChangeText={(value) => {
+                                        setUsername(value);
+                                    }}
+                                />
+                                <TextInput
+                                    placeholder="Password"
+                                    style={styleLogin.loginFormTextInput}
+                                    placeholderColor="#c4c3cb"
+                                    secureTextEntry={true}
+                                    onChangeText={(value) => {
+                                        setPassword(value);
+                                    }}
+                                />
+                                <View style={{margin: 20, borderRadius: 5, backgroundColor: 'green'}}>
+                                    <Button title='Log in'
+                                            onPress={handleLogin}
+                                    />
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </KeyboardAvoidingView>
+                </ScrollView>}
         </SafeAreaView>
     );
 };
@@ -95,7 +100,7 @@ Login.navigationOptions = {
     title: 'Login',
 };
 
-const styleLogin=StyleSheet.create({
+const styleLogin = StyleSheet.create({
     containerView: {
         flex: 1,
     },
@@ -138,8 +143,6 @@ const styleLogin=StyleSheet.create({
         backgroundColor: 'transparent',
     },
 });
-
-
 
 
 export default Login;

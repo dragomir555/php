@@ -55,16 +55,6 @@ const Person = (props) => {
 
     return (
         <View style={styles.container}>
-            <ScrollView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={_onRefresh}
-                    />}
-                contentContainerStyle={{
-                    flex: 1
-                }}
-            >
             {isLoading ? <View>
                     <ActivityIndicator size='large' color='red'/>
                 </View>
@@ -73,12 +63,22 @@ const Person = (props) => {
                     <Text style={styles.titleText}>
                         {}
                     </Text>
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={_onRefresh}
+                            />}
+                        contentContainerStyle={{
+                            flex: 1
+                        }}
+                    >
                     <FlatList {...props} data={people} ItemSeparatorComponent={_renderSeparator}
                               renderItem={({item}) => {
                                   return renderItem(item, props.navigation);
-                              }}/>
+                              }}/></ScrollView>
                 </View>}
-            </ScrollView>
+
         </View>
     );
 };
